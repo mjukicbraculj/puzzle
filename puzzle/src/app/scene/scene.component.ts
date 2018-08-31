@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import * as THREE from 'three';
 import './js/EnableThreeExamples';
+import './js/RotateAndDragControls';
 import 'three/examples/js/loaders/GLTFLoader';
 import 'three/examples/js/controls/TrackballControls';
 import 'three/examples/js/controls/DragControls';
@@ -20,13 +21,10 @@ export class SceneComponent implements OnInit {
   private scene: THREE.Scene;
 
   private plane: THREE.Mesh;
-  private raycaster: THREE.Raycaster;
   private objects = [];
   private controls: THREE.TrackballControls;
   private clock: THREE.Clock;
-  private selection: any;
-  private offset: any;
-  private dragControls: THREE.DragControls;
+  private dragControls: THREE.RotateAndDragControls;
 
   constructor() {
     this.onBoardModelLoadingCompleted = this.onBoardModelLoadingCompleted.bind(this);
@@ -36,13 +34,6 @@ export class SceneComponent implements OnInit {
     this.onDragEnd = this.onDragEnd.bind(this);
 
     this.animate = this.animate.bind(this);
-
-    // document.addEventListener('mousedown', this.onDocumentMouseDown.bind(this));
-    // document.addEventListener('mouseup', this.onDocumentMouseUp.bind(this));
-    // document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this));
-
-    this.raycaster = new THREE.Raycaster();
-    this.offset = new THREE.Vector3();
   }
 
   ngOnInit() {
@@ -58,8 +49,6 @@ export class SceneComponent implements OnInit {
     this.scene.background = new THREE.Color(0xffffff);
     this.camera = new THREE.PerspectiveCamera(SceneConstants.fieldOfView,
       this.getAspectRatio(), SceneConstants.nearClippingPlane, SceneConstants.farClippingPlane);
-    // this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-    // this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
 
     this.camera.position.set(SceneConstants.cameraPosition.x,
       SceneConstants.cameraPosition.y, SceneConstants.cameraPosition.z);
@@ -88,22 +77,22 @@ export class SceneComponent implements OnInit {
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     container.appendChild(this.renderer.domElement);
 
-    this.dragControls = new THREE.DragControls( this.objects, this.camera, this.renderer.domElement );
+    this.dragControls = new THREE.RotateAndDragControls( this.objects, this.camera, this.renderer.domElement );
     this.dragControls.addEventListener( 'dragstart', this.onDragStart );
     this.dragControls.addEventListener( 'dragend', this.onDragEnd );
 
     this.clock = new THREE.Clock();
-
-    // const stats = new THREE.Stats();
-    // container.appendChild( stats.dom );
   }
 
   onDragStart(event) {
     this.controls.enabled = false;
+    console.log(event);
   }
 
   onDragEnd(event) {
     this.controls.enabled = true;
+    const objectPosition = event.object.position;
+    event.object.position.set(objectPosition.x, objectPosition.y, -0.2);
   }
 
   private loadOModels(objects: Array<any>, onLoadedMethod) {
@@ -143,26 +132,6 @@ export class SceneComponent implements OnInit {
     light.position.set(SceneConstants.pointLightPosition4.x,
       SceneConstants.pointLightPosition4.y, SceneConstants.pointLightPosition4.z);
     this.scene.add(light);
-
-    // const hemispheric = new THREE.HemisphereLight(0xffffff, 0x222222, 5);
-    // this.scene.add(hemispheric);
-
-
-    // const spotLight = new THREE.SpotLight(SceneConstants.spotLightColor, SceneConstants.spotLightIntensity);
-    // spotLight.angle = SceneConstants.spotLightAngle;
-    // spotLight.penumbra = SceneConstants.spotLightPenumbra;
-
-    // const targetObject = new THREE.Object3D();
-    // const targetPosition = new THREE.Vector3(-1, 0, 0);
-    // targetObject.position.set(targetPosition.x, targetPosition.y, targetPosition.z);
-    // spotLight.position.set(-2, -2, 10);
-    // spotLight.shadowMapVisible = true;
-    // this.scene.add(targetObject);
-    // spotLight.target = targetObject;
-    // this.scene.add(spotLight);
-
-    // const lightHelper = new THREE.SpotLightHelper(spotLight);
-    // this.scene.add( lightHelper );
   }
 
   public animate() {
@@ -178,7 +147,7 @@ export class SceneComponent implements OnInit {
   }
 
   private onPeaceModelLoadingCompleted(gltf) {
-    gltf.scene.position.set(-4, 2, 0.4);
+    gltf.scene.position.set(-4, 2, 0.7);
     gltf.scene.children.forEach(child => {
       child.updateMatrixWorld();
       this.objects.push(child);
@@ -204,49 +173,6 @@ export class SceneComponent implements OnInit {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.camera.updateProjectionMatrix();
   }
-
-  // onDocumentMouseDown(event) {
-  //   const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-  //   const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  //   const vector = new THREE.Vector3(mouseX, mouseY, 1);
-  //   vector.unproject(this.camera);
-  //   this.raycaster.set(this.camera.position, vector.sub( this.camera.position ).normalize());
-  //   let intersects = this.raycaster.intersectObjects(this.objects);
-
-  //   if (intersects.length > 0) {
-  //     this.controls.enabled = false;
-  //     this.selection = intersects[0].object;
-
-  //     //intersects = this.raycaster.intersectObject(this.plane);
-  //     this.offset.copy(intersects[0].point).sub(this.plane.position);
-  //   }
-  // }
-
-  // private onDocumentMouseMove(event) {
-  //   event.preventDefault();
-  //   const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-  //   const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-  //   const vector = new THREE.Vector3(mouseX, mouseY, 1);
-
-  //   vector.unproject(this.camera);
-  //   this.raycaster.set(this.camera.position, vector.sub(this.camera.position).normalize());
-  //   if (this.selection) {
-  //     const intersects = this.raycaster.intersectObject(this.plane);
-  //     this.selection.position.copy(intersects[0].point.sub(this.offset));
-  //   } else {
-  //     const intersects = this.raycaster.intersectObjects(this.objects);
-  //     if (intersects.length > 0) {
-  //       this.plane.position.copy(intersects[0].object.position);
-  //       this.plane.lookAt(this.camera.position);
-  //     }
-  //   }
-  // }
-
-  // private onDocumentMouseUp(event) {
-  //   this.controls.enabled = true;
-  //   this.selection = null;
-  // }
 
   private getPeacesModelDefinition() {
     return [

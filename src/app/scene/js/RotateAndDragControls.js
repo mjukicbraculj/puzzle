@@ -140,8 +140,10 @@ THREE.RotateAndDragControls = function ( _objects, _camera, _domElement ) {
 
         else if (intersects.length > 0 && event.which === rightMouseButton) {
 
-            var objectRotation = intersects[0].object.rotation;
-            intersects[0].object.rotation.set(objectRotation.x, objectRotation.y + Math.PI / 2, objectRotation.z);
+            var object = intersects[0].object;
+
+            var objectRotation = object.rotation;
+            object.rotation.set(objectRotation.x, objectRotation.y + Math.PI / 2, objectRotation.z);
 
         }
 

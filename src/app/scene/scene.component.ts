@@ -86,13 +86,13 @@ export class SceneComponent implements OnInit {
 
   onDragStart(event) {
     this.controls.enabled = false;
-    console.log(event);
   }
 
   onDragEnd(event) {
     this.controls.enabled = true;
+
     const objectPosition = event.object.position;
-    event.object.position.set(objectPosition.x, objectPosition.y, -0.2);
+    event.object.position.set(objectPosition.x, objectPosition.y, -0.3);
   }
 
   private loadOModels(objects: Array<any>, onLoadedMethod) {
@@ -107,7 +107,8 @@ export class SceneComponent implements OnInit {
         },
         function ( error ) {
           console.log(error); // TODO show error
-        }
+        },
+        model,
       );
     });
   }
@@ -146,8 +147,8 @@ export class SceneComponent implements OnInit {
     this.scene.add(gltf.scene);
   }
 
-  private onPeaceModelLoadingCompleted(gltf) {
-    gltf.scene.position.set(-4, 2, 0.7);
+  private onPeaceModelLoadingCompleted(gltf, model) {
+    gltf.scene.position.set(model.initialPosition.x, model.initialPosition.y, model.initialPosition.z);
     gltf.scene.children.forEach(child => {
       child.updateMatrixWorld();
       this.objects.push(child);
@@ -178,7 +179,68 @@ export class SceneComponent implements OnInit {
     return [
       {
         name: 'peace_1',
-        modelPath: '../../assets/models/peace_1.gltf'
+        modelPath: '../../assets/models/peace_1.gltf',
+        initialPosition: new THREE.Vector3(-5, 2, 1)
+      },
+      {
+        name: 'peace_2',
+        modelPath: '../../assets/models/peace_2.gltf',
+        initialPosition: new THREE.Vector3(5, 2, 1)
+      },
+      {
+        name: 'peace_3',
+        modelPath: '../../assets/models/peace_3.gltf',
+        initialPosition: new THREE.Vector3(3.5, 1, 1)
+      },
+      {
+        name: 'peace_4',
+        modelPath: '../../assets/models/peace_4.gltf',
+        initialPosition: new THREE.Vector3(-4, 3, 1)
+      },
+      {
+        name: 'peace_5',
+        modelPath: '../../assets/models/peace_5.gltf',
+        initialPosition: new THREE.Vector3(-6, 0, 1)
+      },
+      {
+        name: 'peace_6',
+        modelPath: '../../assets/models/peace_6.gltf',
+        initialPosition: new THREE.Vector3(5, 0, 1)
+      },
+      {
+        name: 'peace_7',
+        modelPath: '../../assets/models/peace_7.gltf',
+        initialPosition: new THREE.Vector3(-5, 0.5, 1)
+      },
+      {
+        name: 'peace_8',
+        modelPath: '../../assets/models/peace_8.gltf',
+        initialPosition: new THREE.Vector3(-4.5, -2, 1)
+      },
+      {
+        name: 'peace_9',
+        modelPath: '../../assets/models/peace_9.gltf',
+        initialPosition: new THREE.Vector3(6, -2, 1)
+      },
+      {
+        name: 'peace_10',
+        modelPath: '../../assets/models/peace_10.gltf',
+        initialPosition: new THREE.Vector3(4.1, 2.5, 1)
+      },
+      {
+        name: 'peace_11',
+        modelPath: '../../assets/models/peace_11.gltf',
+        initialPosition: new THREE.Vector3(-6.5, -1.8, 1)
+      },
+      {
+        name: 'peace_12',
+        modelPath: '../../assets/models/peace_12.gltf',
+        initialPosition: new THREE.Vector3(6, 2.8, 1)
+      },
+      {
+        name: 'peace_13',
+        modelPath: '../../assets/models/peace_13.gltf',
+        initialPosition: new THREE.Vector3(3.8, -2.5, 1)
       }
     ];
   }
@@ -187,7 +249,8 @@ export class SceneComponent implements OnInit {
     return [
       {
         name: 'board',
-        modelPath: '../../assets/models/board.gltf'
+        modelPath: '../../assets/models/board.gltf',
+        initialPosition: new THREE.Vector3(0, 0, 0)
       }
     ];
   }

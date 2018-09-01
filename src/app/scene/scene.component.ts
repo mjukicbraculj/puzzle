@@ -169,7 +169,7 @@ export class SceneComponent implements OnInit {
     return this.canvas.clientWidth / this.canvas.clientHeight;
   }
 
-  private onResize(event) {
+  public onResize(event) {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.camera.updateProjectionMatrix();

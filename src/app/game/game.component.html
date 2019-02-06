@@ -1,0 +1,14 @@
+  <div class="pieces-container">
+    <div *ngFor="let piece of pieces" class="piece"
+      [style.height.px]="piece.getHeight()"
+      [style.width.px]="piece.getWidth()">
+      <ng-container *ngFor="let edge of piece.edges">
+        <div [style.height.px]="edge.getHeight()"
+          [style.width.px]="edge.getWidth()"
+          [style.left.px]="edge.left"
+          [style.top.px]="edge.top"
+          class="piece-part">
+        </div>
+      </ng-container>
+    </div>
+  </div>

@@ -1,14 +1,43 @@
-  <div class="pieces-container">
-    <div *ngFor="let piece of pieces" class="piece"
-      [style.height.px]="piece.getHeight()"
-      [style.width.px]="piece.getWidth()">
-      <ng-container *ngFor="let edge of piece.edges">
-        <div [style.height.px]="edge.getHeight()"
-          [style.width.px]="edge.getWidth()"
-          [style.left.px]="edge.left"
-          [style.top.px]="edge.top"
-          class="piece-part">
-        </div>
-      </ng-container>
+  <div class="game-container">
+    <div class="row">
+      <div class="col-6 inner-content-centered">
+          <div class="board-container"
+            [style.height.px]="getBoardHeight()"
+            [style.width.px]="getBoardHeight()">
+            <div class="border-pieces-container">
+
+            </div>
+            <div class="border-blocks-container">
+              <div *ngFor="let block of blocks"
+                [style.height.px]="block.height"
+                [style.width.px]="block.width"
+                [style.top.px]="block.top"
+                [style.left.px]="block.left"
+                class="block-container">
+
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="col-6 inner-content-centered">
+          <div class="pieces-container"
+          [style.height.px]="getBoardHeight()">
+              <div *ngFor="let piece of pieces" class="piece"
+                [style.height.px]="piece.getHeight()"
+                [style.width.px]="piece.getWidth()">
+                <ng-container *ngFor="let edge of piece.edges">
+                  <div [style.height.px]="edge.getHeight()"
+                    [style.width.px]="edge.getWidth()"
+                    [style.left.px]="edge.left"
+                    [style.top.px]="edge.top"
+                    class="piece-part">
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+      </div>
     </div>
   </div>
+  
+

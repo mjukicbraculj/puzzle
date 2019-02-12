@@ -7,9 +7,11 @@ import { Component, OnInit, ElementRef, AfterViewInit, ViewChildren, QueryList, 
 })
 export class GameComponent implements OnInit, AfterViewInit {
 	pieces = new Array<Piece>();
+	blocks = new Array<Block>();
 
-	gameConfiguration = [
-		[
+	gameConfiguration = {
+		dimension: 6,
+		pieces: [[
 			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
 			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
 		],
@@ -17,18 +19,31 @@ export class GameComponent implements OnInit, AfterViewInit {
 			{start: {x: 0, y: 0}, end: {x: 1, y: 0}},
 			{start: {x: 1, y: 0}, end: {x: 1, y: 1}},
 			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		]
-	]
+		]]
+	}
 
   	constructor() { }
 
   	ngOnInit() {
-		this.gameConfiguration.forEach(pieceConfiguration => {
+		Edge.height = (this.getBoardHeight() - (this.gameConfiguration.dimension + 1) * Edge.width) / this.gameConfiguration.dimension;
+
+		this.gameConfiguration.pieces.forEach(pieceConfiguration => {
 			const piece = new Piece(pieceConfiguration);
 			//todo - make translation for having origin at top left
 
 			this.pieces.push(piece);
 		});
+
+		for (let i = 0; i < this.gameConfiguration.dimension; i++) {
+			for (let j = 0; j < this.gameConfiguration.dimension; j++) {
+				this.blocks.push({
+					top: ( i + 1 ) * Edge.width + i * Edge.height,
+					left: ( j + 1 ) * Edge.width + j * Edge.height,
+					width: Edge.height,
+					height: Edge.height
+				})
+			}
+		}
 	}
 
 	ngAfterViewInit() {
@@ -37,6 +52,10 @@ export class GameComponent implements OnInit, AfterViewInit {
 
 	isMobileView() {
 		return typeof window.orientation !== 'undefined'
+	}
+
+	getBoardHeight() : number{
+		return this.isMobileView() ? screen.width : 600;
 	}
 
 }
@@ -55,7 +74,7 @@ export class Edge {
 	top: number;
 	left: number;
 	type: EdgeType
-	static width = 20;
+	static width = 30;
 	static height = 80;
 
 	constructor(top: number, left: number, type: EdgeType) {
@@ -65,11 +84,11 @@ export class Edge {
 	}
 
 	getWidth() {
-		return this.type === EdgeType.Vertical ? Edge.width : Edge.height;
+		return this.type === EdgeType.Vertical ? Edge.width : (Edge.height + Edge.width);
 	}
 
 	getHeight() {
-		return this.type === EdgeType.Vertical ? Edge.height : Edge.width;
+		return this.type === EdgeType.Vertical ? (Edge.height + Edge.width) : Edge.width;
 	}
 }
 
@@ -90,8 +109,8 @@ export class Piece {
 				alert("Confgiuration is not correct")
 			}
 			const type = horizontal ? EdgeType.Horizontal : EdgeType.Vertical;
-			const left = edgeConfiguration.start.x === 0 ? 0 : (edgeConfiguration.start.x - 1) * Edge.height + (Edge.height - Edge.width);
-			const top =  edgeConfiguration.start.y === 0 ? 0 : (edgeConfiguration.start.y - 1) * Edge.height + (Edge.height - Edge.width);
+			const left = edgeConfiguration.start.x === 0 ? 0 : (edgeConfiguration.start.x - 1) * Edge.height + Edge.height;
+			const top =  edgeConfiguration.start.y === 0 ? 0 : (edgeConfiguration.start.y - 1) * Edge.height + Edge.height;
 
 			this.edges.push(new Edge(top, left, type));
 		})
@@ -118,4 +137,11 @@ export class Piece {
 
 		return maxTop + Edge.height;
 	}
+}
+
+export class Block {
+	top: number;
+	left: number;
+	width: number;
+	height: number;
 }

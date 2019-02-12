@@ -1,14 +1,52 @@
-.pieces-container {
-    display: flex;
 
-    .piece {
-        background: transparent;
+
+.game-container {
+    .board-container {
+        background: #aadceb;
         position: relative;
-        margin: 10px;
-    
-        .piece-part {
-            background: red;
+
+        .border-pieces-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .border-blocks-container {
             position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .block-container {
+            position: absolute;
+            background: #003945;
+            border-radius: 4px;
         }
     }
+
+    .pieces-container {
+        display: flex;
+        background: #e6f4f1;
+        min-width: 80%;
+    
+        .piece {
+            background: transparent;
+            position: relative;
+            margin: 20px;
+        
+            .piece-part {
+                background: #bb5d00;
+                position: absolute;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+
+.inner-content-centered {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

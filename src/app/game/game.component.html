@@ -4,9 +4,6 @@
           <div class="board-container"
             [style.height.px]="getBoardHeight()"
             [style.width.px]="getBoardHeight()">
-            <div class="border-pieces-container">
-
-            </div>
             <div class="border-blocks-container">
               <div *ngFor="let block of blocks"
                 [style.height.px]="block.height"
@@ -16,17 +13,24 @@
                 class="block-container">
 
               </div>
+              <div class="border-pieces-container"
+              [dragula]="dragula">
+
+              </div>
+           
             </div>
           </div>
       </div>
 
       <div class="col-6 inner-content-centered">
           <div class="pieces-container"
-          [style.height.px]="getBoardHeight()">
-              <div *ngFor="let piece of pieces" class="piece"
+          [style.height.px]="getBoardHeight()"
+          [dragula]="dragula">
+              <div *ngFor="let piece of pieces; let i = index" class="piece"
                 [style.height.px]="piece.getHeight()"
-                [style.width.px]="piece.getWidth()">
-                <ng-container *ngFor="let edge of piece.edges">
+                [style.width.px]="piece.getWidth()"
+                [id]="i">
+                <ng-container *ngFor="let edge of piece.edges" >
                   <div [style.height.px]="edge.getHeight()"
                     [style.width.px]="edge.getWidth()"
                     [style.left.px]="edge.left"

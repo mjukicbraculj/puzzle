@@ -8,6 +8,12 @@
         .border-pieces-container {
             width: 100%;
             height: 100%;
+            position: absolute;
+            display: flex;
+            
+            .piece {
+                margin: 0;
+            }
         }
 
         .border-blocks-container {
@@ -29,19 +35,14 @@
         display: flex;
         background: #e6f4f1;
         min-width: 80%;
-    
+
         .piece {
-            background: transparent;
-            position: relative;
             margin: 20px;
-        
-            .piece-part {
-                background: #bb5d00;
-                position: absolute;
-                border-radius: 4px;
-            }
         }
     }
+
+
+    
 }
 
 .inner-content-centered {
@@ -49,4 +50,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+//TODO dragula - mirrorontainer
+.piece {
+    position: relative;
+
+    .piece-part {
+        background: #bb5d00;
+        position: absolute;
+        border-radius: 4px;
+    }
 }

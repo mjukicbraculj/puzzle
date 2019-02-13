@@ -1,11 +1,13 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChildren, QueryList, ViewChild, OnDestroy } from '@angular/core';
+import { DragulaService } from 'ng2-dragula';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-game',
 	templateUrl: './game.component.html',
 	styleUrls: ['./game.component.less']
 })
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 	pieces = new Array<Piece>();
 	blocks = new Array<Block>();
 
@@ -22,7 +24,29 @@ export class GameComponent implements OnInit, AfterViewInit {
 		]]
 	}
 
-  	constructor() { }
+	subs = new Subscription();
+	dragula = 'piece-dragula';
+
+  	constructor(private dragulaService: DragulaService) { 
+		this.subs.add(this.dragulaService.drop(this.dragula)
+			.subscribe(({ name, el, target, source }) => {
+				const left = el.getClientRects()[0].left - target.getClientRects()[0].left
+				const top = el.getClientRects()[0].top - target.getClientRects()[0].top
+				const piece = this.pieces[Number.parseInt(el.getAttribute("id"))]
+				el.setAttribute("style", `left: ${left}px; top: ${top}px; height: ${piece.getHeight()}px; width: ${piece.getWidth()}px`);
+			})
+		);
+		this.subs.add(this.dragulaService.over(this.dragula)
+		.subscribe(({ name, el }) => {
+			console.log(document.getElementsByClassName("gu-transit").length);
+			console.log(document.getElementsByClassName("gu-mirror").length);
+			const transitELement = document.getElementsByClassName("gu-transit")[0];
+			const mirrorElement = document.getElementsByClassName("gu-mirror")[0]
+			console.log(transitELement.getBoundingClientRect());
+			transitELement.setAttribute("style", "left: 100px; top: 100px");
+		})
+	);
+	}
 
   	ngOnInit() {
 		Edge.height = (this.getBoardHeight() - (this.gameConfiguration.dimension + 1) * Edge.width) / this.gameConfiguration.dimension;
@@ -49,6 +73,10 @@ export class GameComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit() {
 	
 	}
+
+	ngOnDestroy() {
+		this.subs.unsubscribe();
+	  }
 
 	isMobileView() {
 		return typeof window.orientation !== 'undefined'
@@ -124,7 +152,7 @@ export class Piece {
 			}
 		});
 
-		return maxLeft + Edge.height;
+		return maxLeft + Edge.height + Edge.width;
 	}
 
 	getHeight() {
@@ -135,7 +163,7 @@ export class Piece {
 			}
 		});
 
-		return maxTop + Edge.height;
+		return maxTop + Edge.height + Edge.width;
 	}
 }
 

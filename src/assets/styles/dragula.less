@@ -3,7 +3,7 @@
     position: fixed !important;
     margin: 0 !important;
     z-index: 9999 !important;
-    opacity: 0.8;
+    opacity: 0.9;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
     filter: alpha(opacity=80);
     pointer-events: none;
@@ -21,7 +21,8 @@
   }
   /* added to the source element while its mirror is dragged */
   .gu-transit {
-    opacity: 0.2;
+    opacity: 0;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
     filter: alpha(opacity=20);
+    position: absolute;
   }

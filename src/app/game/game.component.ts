@@ -21,31 +21,67 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 			{start: {x: 0, y: 0}, end: {x: 1, y: 0}},
 			{start: {x: 1, y: 0}, end: {x: 1, y: 1}},
 			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		],
+		[
+			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
 		]]
 	}
 
 	subs = new Subscription();
 	dragula = 'piece-dragula';
+	private mirrorElementClass = 'gu-mirror';
 
-  	constructor(private dragulaService: DragulaService) { 
+  	constructor(private dragulaService: DragulaService) {
 		this.subs.add(this.dragulaService.drop(this.dragula)
 			.subscribe(({ name, el, target, source }) => {
-				const left = el.getClientRects()[0].left - target.getClientRects()[0].left
-				const top = el.getClientRects()[0].top - target.getClientRects()[0].top
-				const piece = this.pieces[Number.parseInt(el.getAttribute("id"))]
-				el.setAttribute("style", `left: ${left}px; top: ${top}px; height: ${piece.getHeight()}px; width: ${piece.getWidth()}px`);
+				this.dropElementToBoard(el, target)
 			})
 		);
-		this.subs.add(this.dragulaService.over(this.dragula)
-		.subscribe(({ name, el }) => {
-			console.log(document.getElementsByClassName("gu-transit").length);
-			console.log(document.getElementsByClassName("gu-mirror").length);
-			const transitELement = document.getElementsByClassName("gu-transit")[0];
-			const mirrorElement = document.getElementsByClassName("gu-mirror")[0]
-			console.log(transitELement.getBoundingClientRect());
-			transitELement.setAttribute("style", "left: 100px; top: 100px");
-		})
-	);
+
+		this.subs.add(this.dragulaService.cancel(this.dragula)
+			.subscribe(({name, el, source}) => {
+				if (source.getAttribute('class') === 'board-pieces-container') {
+					this.dropElementToBoard(el, source);
+				}
+			})
+		);
 	}
 
   	ngOnInit() {
@@ -71,14 +107,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngAfterViewInit() {
-	
+
 	}
 
 	ngOnDestroy() {
 		this.subs.unsubscribe();
 	  }
 
-	isMobileView() {
+	isMobileView() : boolean{
 		return typeof window.orientation !== 'undefined'
 	}
 
@@ -86,6 +122,21 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.isMobileView() ? screen.width : 600;
 	}
 
+	getPiecesContainerHeight() : number {
+		return this.isMobileView() ? screen.height - screen.width : this.getBoardHeight(); //todo margin top bottom
+	}
+
+	private dropElementToBoard(element: Element, target: Element) : void{
+		const piece = this.pieces[Number.parseInt(element.getAttribute("id"))]
+
+		const mirrorElement = document.getElementsByClassName(this.mirrorElementClass)[0];
+		const mirrorElementClientRect = mirrorElement.getClientRects()[0];
+		const targetClientRect = target.getClientRects()[0];
+		const top = mirrorElementClientRect.top - targetClientRect.top;
+		const left = mirrorElementClientRect.left - targetClientRect.left;
+
+		element.setAttribute("style", `left: ${left}px; top: ${top}px; height: ${piece.getHeight()}px; width: ${piece.getWidth()}px`);
+	}
 }
 
 export class VertexConfiguration {
@@ -133,7 +184,7 @@ export class Piece {
 			const horizontal = edgeConfiguration.end.x - edgeConfiguration.start.x;
 			const vertical = edgeConfiguration.end.y - edgeConfiguration.start.y;
 			if (horizontal !== 1 && vertical === 0 || horizontal === 0 && vertical !== 1) {
-				//TODO - 
+				//TODO -
 				alert("Confgiuration is not correct")
 			}
 			const type = horizontal ? EdgeType.Horizontal : EdgeType.Vertical;

@@ -28,40 +28,51 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		],
 		[
 			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		],
-		[
-			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
-		]]
+			{start: {x: 0, y: 1}, end: {x: 0, y: 2}},
+			{start: {x: 0, y: 2}, end: {x: 0, y: 3}},
+			{start: {x: 0, y: 3}, end: {x: 0, y: 4}},
+			{start: {x: 0, y: 0}, end: {x: 1, y: 0}},
+			{start: {x: 1, y: 0}, end: {x: 2, y: 0}},
+			{start: {x: 2, y: 0}, end: {x: 3, y: 0}},
+			{start: {x: 3, y: 0}, end: {x: 4, y: 0}}
+		]
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ],
+		// [
+		// 	{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
+		// 	{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+		// ]
+	]
 	}
 
 	subs = new Subscription();
@@ -85,9 +96,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
   	ngOnInit() {
-		let elem = document.documentElement;
-		let methodToBeInvoked = elem.requestFullscreen;
-		if (methodToBeInvoked) methodToBeInvoked.call(elem);
+		// let elem = document.documentElement;
+		// let methodToBeInvoked = elem.requestFullscreen;
+		// if (methodToBeInvoked) methodToBeInvoked.call(elem);
+
+
 		Edge.len = (this.getBoardHeight() - (this.gameConfiguration.dimension + 1) * Edge.width) / this.gameConfiguration.dimension;
 
 		this.gameConfiguration.pieces.forEach(pieceConfiguration => {
@@ -181,6 +194,10 @@ export enum EdgeType {
 
 export class Piece {
 	edges = Array<Edge>();
+	minX = null;
+	maxX = null;
+	minY = null;
+	maxY = null;
 
 	constructor(edgesConfiguration: Array<EdgeConfiguration>) {
 		edgesConfiguration.forEach(edgeConfiguration => {
@@ -191,33 +208,33 @@ export class Piece {
 				alert("Confgiuration is not correct")
 			}
 			const type = horizontal ? EdgeType.Horizontal : EdgeType.Vertical;
-			const left = edgeConfiguration.start.x === 0 ? 0 : (edgeConfiguration.start.x - 1) * Edge.len + Edge.len + Edge.width;
-			const top =  edgeConfiguration.start.y === 0 ? 0 : (edgeConfiguration.start.y - 1) * Edge.len + Edge.len + Edge.width;
+			const left = edgeConfiguration.start.x === 0 ? 0 : (edgeConfiguration.start.x - 1) * (Edge.len + Edge.width) + Edge.len + Edge.width;
+			const top =  edgeConfiguration.start.y === 0 ? 0 : (edgeConfiguration.start.y - 1) * (Edge.len + Edge.width) + Edge.len + Edge.width;
 
+			if (this.minX === null || this.minX > edgeConfiguration.start.x) {
+				this.minX = edgeConfiguration.start.x;
+			}
+			if (this.maxX === null || this.maxX < edgeConfiguration.end.x) {
+				this.maxX = edgeConfiguration.end.x;
+			}
+
+			if (this.minY === null || this.minY > edgeConfiguration.start.y) {
+				this.minY = edgeConfiguration.start.y;
+			}
+			if (this.maxY === null || this.maxY < edgeConfiguration.end.y) {
+				this.maxY = edgeConfiguration.end.y;
+			}
+			
 			this.edges.push(new Edge(top, left, type));
 		})
 	}
 
 	getWidth() {
-		let maxLeft = 0;
-		this.edges.forEach(edge => {
-			if (edge.left > maxLeft) {
-				maxLeft = edge.left;
-			}
-		});
-
-		return maxLeft + Edge.len + Edge.width;
+		return Math.abs(this.maxX - this.minX) * (Edge.len + Edge.width) + Edge.width;
 	}
 
 	getHeight() {
-		let maxTop = 0;
-		this.edges.forEach(edge => {
-			if (edge.top > maxTop) {
-				maxTop = edge.left;
-			}
-		});
-
-		return maxTop + Edge.len + Edge.width;
+		return Math.abs(this.maxY - this.minY) * (Edge.len + Edge.width) + Edge.width;
 	}
 }
 

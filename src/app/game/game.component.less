@@ -38,6 +38,7 @@
 
     .pieces-container {
         display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
         background: #e6f4f1;
         width: 100%;
@@ -45,10 +46,27 @@
         margin-top: 10px;
         // padding-bottom: 150px;
 
-        .piece {
-            border: 2px solid black;
-            border-radius: 4px;
-            margin: 20px;
+        .piece-outer-container {
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+            border-bottom: 1px solid black;
+            position: relative;
+            width: 100%;
+
+            .rotate-btns-container {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                .rotate-btn {
+                    width: 40px;
+                }
+            }
+
+            .piece-container {
+                display: flex;
+            }
         }
     }
 }
@@ -64,10 +82,12 @@
 .piece {
     position: relative;
     display: initial;
+    pointer-events: none;
 
     .piece-part {
         background: #bb5d00;
         position: absolute;
         border-radius: 4px;
+        pointer-events: all;
     }
 }

@@ -25,20 +25,31 @@
       <div class="col-xs-12 col-md-6 inner-content-centered">
           <div class="pieces-container"
           [style.height.px]="getPiecesContainerHeight()"
-          [dragula]="dragula">
-              <div *ngFor="let piece of pieces; let i = index" class="piece"
+          >
+            <div *ngFor="let piece of pieces; let i = index" class="piece-outer-container">
+              <div class="rotate-btns-container">
+                  <input class="rotate-btn" type="image" src="../assets/icons/rotate_left.svg"/>
+                  <input class="rotate-btn" type="image" src="../assets/icons/rotate_right.svg"/>
+              </div>
+              <div class="piece-container"
+                [dragula]="dragula"
+                [style.height.px]="piece.getHeight()"
+                [style.width.px]="piece.getWidth()">
+                <div class="piece"
                 [style.height.px]="piece.getHeight()"
                 [style.width.px]="piece.getWidth()"
                 [id]="i">
-                <ng-container *ngFor="let edge of piece.edges" >
-                  <div [style.height.px]="edge.getHeight()"
-                    [style.width.px]="edge.getWidth()"
-                    [style.left.px]="edge.left"
-                    [style.top.px]="edge.top"
-                    class="piece-part">
-                  </div>
-                </ng-container>
+                  <ng-container *ngFor="let edge of piece.edges" >
+                    <div [style.height.px]="edge.getHeight()"
+                      [style.width.px]="edge.getWidth()"
+                      [style.left.px]="edge.left"
+                      [style.top.px]="edge.top"
+                      class="piece-part">
+                    </div>
+                  </ng-container>
+                </div>
               </div>
+            </div>
       </div>
     </div>
   </div>

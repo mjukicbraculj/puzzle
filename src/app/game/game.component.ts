@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./game.component.less']
 })
 export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
+	isDragging = false;
 	pieces = new Array<Piece>();
 	blocks = new Array<Block>();
 
@@ -15,7 +16,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		dimension: 4,
 		pieces: [[
 			{start: {x: 0, y: 0}, end: {x: 0, y: 1}},
-			{start: {x: 0, y: 1}, end: {x: 1, y: 1}}
+			{start: {x: 0, y: 1}, end: {x: 1, y: 1}},
+			{start: {x: 1, y: 1}, end: {x: 2, y: 1}}
 		],
 		[
 			{start: {x: 0, y: 0}, end: {x: 1, y: 0}},
@@ -82,12 +84,23 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   	constructor(private dragulaService: DragulaService) {
 		this.subs.add(this.dragulaService.drop(this.dragula)
 			.subscribe(({ name, el, target, source }) => {
+				this.isDragging = false;
 				this.dropElementToBoard(el, target)
+			})
+		);
+
+		this.subs.add(this.dragulaService.drag(this.dragula)
+			.subscribe(({name, el, source}) => {
+				this.isDragging = true;
+				// const mirrorElement = document.getElementsByClassName(this.mirrorElementClass)[0];
+				const oldStyle = el.getAttribute("style");
+				el.setAttribute("style", oldStyle + " width: 0px !important;")
 			})
 		);
 
 		this.subs.add(this.dragulaService.cancel(this.dragula)
 			.subscribe(({name, el, source}) => {
+				this.isDragging = false;
 				if (source.getAttribute('class') === 'board-pieces-container') {
 					this.dropElementToBoard(el, source);
 				}
@@ -142,6 +155,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.isMobileView() ? screen.height - screen.width : this.getBoardHeight(); //todo margin top bottom
 	}
 
+	rotateLeft(piece: Piece) {
+		piece.rotation += 90;
+	}
+
 	private dropElementToBoard(element: Element, target: Element) : void{
 		const piece = this.pieces[Number.parseInt(element.getAttribute("id"))]
 
@@ -151,7 +168,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		const top = mirrorElementClientRect.top - targetClientRect.top;
 		const left = mirrorElementClientRect.left - targetClientRect.left;
 
-		element.setAttribute("style", `left: ${left}px; top: ${top}px; height: ${piece.getHeight()}px; width: ${piece.getWidth()}px`);
+		// const currentStyle = element.getAttribute("style");
+		// console.log(currentStyle);
+
+
+		element.setAttribute("style", `left: ${left}px; top: ${top}px; transform: rotate(${piece.rotation}deg);`);
+
+		console.log(element.getAttribute("style"));
 	}
 }
 
@@ -198,6 +221,7 @@ export class Piece {
 	maxX = null;
 	minY = null;
 	maxY = null;
+	rotation = 0;
 
 	constructor(edgesConfiguration: Array<EdgeConfiguration>) {
 		edgesConfiguration.forEach(edgeConfiguration => {
@@ -229,12 +253,28 @@ export class Piece {
 		})
 	}
 
+	rotateLeft() {
+		this.rotation -= 90;
+	}
+
+	rotateRight() {
+		this.rotation += 90;
+	}
+
 	getWidth() {
 		return Math.abs(this.maxX - this.minX) * (Edge.len + Edge.width) + Edge.width;
 	}
 
 	getHeight() {
 		return Math.abs(this.maxY - this.minY) * (Edge.len + Edge.width) + Edge.width;
+	}
+
+	getHeightOfRotated() {
+		if (this.rotation % 180 === 0) {
+			return this.getHeight();
+		}
+
+		return this.getWidth();
 	}
 }
 

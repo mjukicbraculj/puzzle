@@ -25,11 +25,19 @@
       <div class="col-xs-12 col-md-6 inner-content-centered">
           <div class="pieces-container"
           [style.height.px]="getPiecesContainerHeight()"
-          >
-            <div *ngFor="let piece of pieces; let i = index" class="piece-outer-container">
+          [style.overflow]="isDragging ? 'hidden' : 'auto'">
+            <div *ngFor="let piece of pieces; let i = index"
+              class="piece-outer-container"
+              [style.height.px]="piece.getHeightOfRotated() + 2 * 40">
               <div class="rotate-btns-container">
-                  <input class="rotate-btn" type="image" src="../assets/icons/rotate_left.svg"/>
-                  <input class="rotate-btn" type="image" src="../assets/icons/rotate_right.svg"/>
+                  <input class="rotate-btn"
+                    type="image"
+                    src="../assets/icons/rotate_left.svg"
+                    (click)="piece.rotateLeft()"/>
+                  <input class="rotate-btn"
+                    type="image"
+                    src="../assets/icons/rotate_right.svg"
+                    (click)="piece.rotateRight()"/>
               </div>
               <div class="piece-container"
                 [dragula]="dragula"
@@ -38,7 +46,8 @@
                 <div class="piece"
                 [style.height.px]="piece.getHeight()"
                 [style.width.px]="piece.getWidth()"
-                [id]="i">
+                [id]="i"
+                [style.transform]="'rotate(' + piece.rotation + 'deg)'">
                   <ng-container *ngFor="let edge of piece.edges" >
                     <div [style.height.px]="edge.getHeight()"
                       [style.width.px]="edge.getWidth()"

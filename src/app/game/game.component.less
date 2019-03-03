@@ -42,13 +42,14 @@
         flex-wrap: wrap;
         background: #e6f4f1;
         width: 100%;
-        overflow: auto;
+        // overflow: auto;
         margin-top: 10px;
         // padding-bottom: 150px;
 
         .piece-outer-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             padding: 40px 0;
             border-bottom: 1px solid black;
             position: relative;
@@ -69,6 +70,10 @@
             }
         }
     }
+
+    .pieces-container::-webkit-scrollbar { 
+        display: none;  // Safari and Chrome
+    }
 }
 
 .inner-content-centered {
@@ -81,7 +86,7 @@
 //TODO dragula - mirrorontainer
 .piece {
     position: relative;
-    display: initial;
+    display: flex;
     pointer-events: none;
 
     .piece-part {

@@ -14,10 +14,11 @@
         .board-pieces-container {
             width: 100%;
             height: 100%;
-            position: absolute;
+            position: relative;
 
-            .piece {
+            .piece-inner-container {
                 margin: 0;
+                position: absolute;
             }
         }
 
@@ -84,15 +85,21 @@
 }
 
 //TODO dragula - mirrorontainer
-.piece {
-    position: relative;
-    display: flex;
-    pointer-events: none;
 
-    .piece-part {
-        background: #bb5d00;
-        position: absolute;
-        border-radius: 4px;
-        pointer-events: all;
+.piece-inner-container {
+    pointer-events: none;
+    
+    .piece {
+        position: relative;
+        display: flex;
+        pointer-events: none;
+    
+        .piece-part {
+            background: #bb5d00;
+            position: absolute;
+            border-radius: 4px;
+            pointer-events: all;
+        }
     }
 }
+

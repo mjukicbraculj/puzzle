@@ -92,9 +92,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.subs.add(this.dragulaService.drag(this.dragula)
 			.subscribe(({name, el, source}) => {
 				this.isDragging = true;
+
+
+				//TODO probably not needed
 				// const mirrorElement = document.getElementsByClassName(this.mirrorElementClass)[0];
-				const oldStyle = el.getAttribute("style");
-				el.setAttribute("style", oldStyle + " width: 0px !important;")
+				// const oldStyle = el.getAttribute("style");
+				// const piece = this.pieces[Number.parseInt(el.getAttribute("id"))];
+
+				// if (piece.rotation % 360 === 0) {
+				// 	el.setAttribute("style", oldStyle + " width: 0px !important; height: 0px !important;")
+				// }
+				// else {
+				// 	el.setAttribute("style", oldStyle + " height: 0px !important; width: 0px !important;")
+				// }
 			})
 		);
 
@@ -172,7 +182,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 		// console.log(currentStyle);
 
 
-		element.setAttribute("style", `left: ${left}px; top: ${top}px; transform: rotate(${piece.rotation}deg);`);
+		element.setAttribute("style", `left: ${left}px; top: ${top}px;
+					 width: ${piece.getWidth()}px; height: ${piece.getHeight()}px;`);
+
+		// element.setAttribute("style", `left: ${left}px; top: ${top}px;
+		// 	transform: rotate(${piece.rotation}deg);`);
 
 		console.log(element.getAttribute("style"));
 	}
@@ -275,6 +289,14 @@ export class Piece {
 		}
 
 		return this.getWidth();
+	}
+
+	getWidthOfRotated() {
+		if (this.rotation % 180 === 0) {
+			return this.getWidth();
+		}
+
+		return this.getHeight();
 	}
 }
 
